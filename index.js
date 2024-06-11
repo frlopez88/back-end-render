@@ -4,6 +4,10 @@ import cors from 'cors';
 import { user } from './routes/routeUser.js';
 import { comida } from './routes/routeComidas.js';
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv';
+dotenv.config();
+
+const key_encript = process.env.KEY_ENCRIPT; 
 
 //middleware 
 app.use(express.json());
@@ -25,7 +29,7 @@ const verificarToken =(req, res, next)=>{
         
         try {
 
-            const decodeToken = jwt.verify(bearToken, 'secret');
+            const decodeToken = jwt.verify(bearToken, key_encript);
             next();
 
         }catch(err){

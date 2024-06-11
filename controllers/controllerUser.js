@@ -1,4 +1,8 @@
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const key_encript = process.env.KEY_ENCRIPT; 
 
 const usuarios = [
     {
@@ -24,7 +28,7 @@ const auth = ( req, res  )=>{
 
         if (usuario.user_name === user_name && usuario.pass === pass){
             user_auth = usuario;
-            const token = jwt.sign( usuario, 'secret', { expiresIn: '1h' } )
+            const token = jwt.sign( usuario, key_encript, { expiresIn: '1h' } )
             user_auth.token = token;
         }
 
