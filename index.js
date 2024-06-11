@@ -7,47 +7,54 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 dotenv.config();
 
-const key_encript = process.env.KEY_ENCRIPT; 
+const key_encript = process.env.KEY_ENCRIPT;
 
 //middleware 
 app.use(express.json());
 app.use(cors());
 
-const verificarToken =(req, res, next)=>{
+const verificarToken = (req, res, next) => {
 
     //console.log(req);
     const symbols = Object.getOwnPropertySymbols(req);
-    const kHeaderSymbol = symbols.find(  sym => sym.toString() === 'Symbol(kHeaders)');
+    const kHeaderSymbol = symbols.find(sym => sym.toString() === 'Symbol(kHeaders)');
 
 
     if (kHeaderSymbol) {
 
         const headers = req[kHeaderSymbol];
-        const {authorization} = headers;
-        const arr_auth = authorization.split(" ");
-        const bearToken  = arr_auth[1];
-        
-        try {
+        const { authorization } = headers;
 
-            const decodeToken = jwt.verify(bearToken, key_encript);
-            next();
+        if (authorization) {
+            const arr_auth = authorization.split(" ");
+            const bearToken = arr_auth[1];
 
-        }catch(err){
+            try {
 
-            res.json({mensaje: "Token Invalido"});
+                const decodeToken = jwt.verify(bearToken, key_encript);
+                next();
 
+            } catch (err) {
+
+                res.json({ mensaje: "Token Invalido" });
+
+            }
+        }else{
+            res.json({ mensaje: "Token Invalido" });
         }
 
+
+
     }
-    
-    
+
+
 
 }
 
-app.use('/api/auth',user)
-app.use('/api/comida', verificarToken,  comida)
+app.use('/api/auth', user)
+app.use('/api/comida', verificarToken, comida)
 
 
-app.listen( 3000, ()=>{
+app.listen(3000, () => {
     console.log("Servicio en el puerto 3000");
-} )
+})
